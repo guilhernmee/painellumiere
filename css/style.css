@@ -220,6 +220,13 @@ tbody tr:hover {
   gap: 8px;
 }
 
+/* --- ALERTA DE ESTOQUE BAIXO --- */
+.low-stock {
+  background: rgba(255, 0, 0, 0.08);
+  color: var(--danger);
+  font-weight: 600;
+}
+
 /* --- PÍLULAS (status) --- */
 .pill {
   display: inline-block;
