@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Estoque - Lumière Dental</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <aside class="sidebar">
+    <h2>Lumière Dental</h2>
+    <nav>
+      <a href="dashboard.html">🏠 Dashboard</a>
+      <a href="pacientes.html">🧑‍⚕️ Pacientes</a>
+      <a href="equipe.html">👩‍🔬 Equipe</a>
+      <a href="financeiro.html">💰 Financeiro</a>
+      <a href="agendamentos.html">📅 Agendamentos</a>
+      <a href="mensagens.html">💬 Mensagens</a>
+      <a href="laudos.html">📄 Laudos</a>
+      <a href="estoque.html" class="active">📦 Estoque</a>
+    </nav>
+    <button class="btn logout" onclick="window.location.href='index.html'">Sair</button>
+  </aside>
+
+  <main class="main-content">
+    <header>
+      <h1>📦 Controle de Estoque</h1>
+    </header>
+
+    <section class="card">
+      <h2>Adicionar Item</h2>
+      <form id="formEstoque">
+        <div class="form-row">
+          <input type="text" id="nomeItem" placeholder="Nome do Item" required />
+          <input type="number" id="quantidade" placeholder="Quantidade" min="1" required />
+          <input type="text" id="categoria" placeholder="Categoria (ex: limpeza, anestesia)" />
+        </div>
+        <div class="form-row">
+          <input type="date" id="validade" placeholder="Validade (opcional)" />
+          <input type="number" id="alerta" placeholder="Alerta mínimo (ex: 5)" />
+        </div>
+        <button type="submit" class="btn">Salvar Item</button>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>📋 Itens em Estoque</h2>
+      <table id="listaEstoque">
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Categoria</th>
+            <th>Quantidade</th>
+            <th>Validade</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td colspan="5" style="text-align:center;">Nenhum item cadastrado.</td></tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
