@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Laudos e Recomendações - Lumière Dental</title>
+  <link rel="stylesheet" href="css/style.css">
+
+  <style>
+    /* ====== Estilos extras para Laudos ====== */
+    textarea {
+      width: 100%;
+      min-height: 100px;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 15px;
+      resize: vertical;
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      color: #fff;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    .pill.success {
+      background-color: #2ecc71; /* verde para Laudo */
+    }
+
+    .pill.warn {
+      background-color: #f1c40f; /* amarelo para Recomendação */
+    }
+
+    .table-actions {
+      display: flex;
+      gap: 5px;
+      justify-content: center;
+    }
+  </style>
+</head>
+<body>
+  <aside class="sidebar">
+    <h2>Lumière Dental</h2>
+    <nav>
+      <a href="dashboard.html">🏠 Dashboard</a>
+      <a href="pacientes.html">🧑‍⚕️ Pacientes</a>
+      <a href="equipe.html">👩‍🔬 Equipe</a>
+      <a href="financeiro.html">💰 Financeiro</a>
+      <a href="agendamentos.html">📅 Agendamentos</a>
+      <a href="mensagens.html">💬 Mensagens</a>
+      <a href="laudos.html" class="active">📄 Laudos</a>
+    </nav>
+    <button class="btn logout" onclick="window.location.href='index.html'">Sair</button>
+  </aside>
+
+  <main class="main-content">
+    <header>
+      <h1>📄 Laudos e Recomendações</h1>
+    </header>
+
+    <section class="card">
+      <form id="formLaudo">
+        <div class="form-row">
+          <select id="tipo" required>
+            <option value="">Selecione o tipo</option>
+            <option value="Laudo">Laudo</option>
+            <option value="Recomendação">Recomendação</option>
+          </select>
+
+          <select id="paciente" required>
+            <option value="">Selecione o paciente</option>
+          </select>
+        </div>
+
+        <textarea id="descricao" placeholder="Digite aqui o conteúdo do laudo ou recomendação..." required></textarea>
+        <button class="btn" type="submit">Emitir</button>
+      </form>
+    </section>
+
+    <section class="card" style="margin-top:20px;">
+      <h2>📋 Registros Emitidos</h2>
+      <table id="listaLaudos">
+        <thead>
+          <tr>
+            <th>Tipo</th>
+            <th>Paciente</th>
+            <th>Descrição</th>
+            <th>Data</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+  </main>
+
+  <script>
+    // --- carregar pacientes ---
+    const pacientes = JSON.parse(localStorage.getItem("pacientes") || "[]");
+    const laudos = JSON.parse(localStorage.getItem("laudos") || "[]");
+
+    const selPac = document.getElementById("paciente");
+    const form = document.getElementById("formLaudo");
+    const tbody = document.querySelector("#listaLaudos tbody");
+
+    function carregarPacientes() {
+      selPac.innerHTML = '<option value="">Selecione o paciente</option>' +
+        pacientes.map(p => `<option value="\${p.nome}">\${p.nome}</option>`).join("");
+    }
+
+    function renderLaudos() {
+      const lista = JSON.parse(localStorage.getItem("laudos") || "[]");
+      tbody.innerHTML = lista.map(l => `
+        <tr>
+          <td><span class="pill \${l.tipo === 'Laudo' ? 'success' : 'warn'}">\${l.tipo}</span></td>
+          <td>\${l.paciente}</td>
+          <td>\${l.descricao}</td>
+          <td>\${l.data}</td>
+          <td class="table-actions">
+            <button class="btn small ghost" onclick="removerLaudo(\${l.id})">Excluir</button>
+          </td>
+        </tr>
+      `).join("");
+    }
+
+    window.removerLaudo = function(id) {
+      if (!confirm("Deseja excluir este registro?")) return;
+      const lista = JSON.parse(localStorage.getItem("laudos") || "[]");
+      const nova = lista.filter(l => l.id !== id);
+      localStorage.setItem("laudos", JSON.stringify(nova));
+      renderLaudos();
+    };
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const tipo = document.getElementById("tipo").value;
+      const paciente = selPac.value;
+      const descricao = document.getElementById("descricao").value.trim();
+      if (!tipo || !paciente || !descricao) return alert("Preencha todos os campos.");
+
+      const novo = {
+        id: Date.now(),
+        tipo,
+        paciente,
+        descricao,
+        data: new Date().toLocaleDateString("pt-BR")
+      };
+      const lista = JSON.parse(localStorage.getItem("laudos") || "[]");
+      lista.push(novo);
+      localStorage.setItem("laudos", JSON.stringify(lista));
+      form.reset();
+      renderLaudos();
+    });
+
+    carregarPacientes();
+    renderLaudos();
+  </script>
+</body>
+</html>
