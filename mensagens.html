@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mensagens - Lumière Dental</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <aside class="sidebar">
+    <h2>Lumière Dental</h2>
+    <nav>
+      <a href="dashboard.html">🏠 Dashboard</a>
+      <a href="pacientes.html">🧑‍⚕️ Pacientes</a>
+      <a href="equipe.html">👩‍🔬 Equipe</a>
+      <a href="financeiro.html">💰 Financeiro</a>
+      <a href="agendamentos.html">📅 Agendamentos</a>
+      <a href="mensagens.html" class="active">💬 Mensagens</a>
+    </nav>
+    <button class="btn logout" onclick="window.location.href='index.html'">Sair</button>
+  </aside>
+
+  <main class="main-content">
+    <header>
+      <h1>💬 Enviar Mensagens</h1>
+    </header>
+
+    <section class="card">
+      <form id="formMensagem">
+        <div class="form-row">
+          <select id="destinatario" required>
+            <option value="">Selecione o paciente</option>
+          </select>
+          <input id="assunto" placeholder="Assunto da mensagem" required>
+        </div>
+        <textarea id="mensagem" rows="4" placeholder="Digite sua mensagem aqui..." required></textarea>
+        <button class="btn" type="submit">Enviar Mensagem</button>
+      </form>
+    </section>
+
+    <section class="card" style="margin-top:20px;">
+      <h2>📜 Histórico de Mensagens</h2>
+      <table id="listaMensagens">
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Paciente</th>
+            <th>Assunto</th>
+            <th>Mensagem</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+  </main>
+
+  <script>
+    // --- Inicialização ---
+    const pacientes = JSON.parse(localStorage.getItem("pacientes") || "[]");
+    const mensagens = JSON.parse(localStorage.getItem("mensagens") || "[]");
+
+    const selDest = document.getElementById("destinatario");
+    const form = document.getElementById("formMensagem");
+    const tbody = document.querySelector("#listaMensagens tbody");
+
+    // --- Carregar pacientes no select ---
+    function carregarPacientes() {
+      selDest.innerHTML = '<option value="">Selecione o paciente</option>' +
+        pacientes.map(p => `<option value="${p.nome}">${p.nome}</option>`).join("");
+    }
+
+    // --- Renderizar histórico ---
+    function renderMensagens() {
+      const msgs = JSON.parse(localStorage.getItem("mensagens") || "[]");
+      tbody.innerHTML = msgs.map(m => `
+        <tr>
+          <td>${m.data}</td>
+          <td>${m.paciente}</td>
+          <td>${m.assunto}</td>
+          <td>${m.texto}</td>
+          <td class="table-actions">
+            <button class="btn small ghost" onclick="reenviarMensagem(${m.id})">Reenviar</button>
+            <button class="btn small" onclick="removerMensagem(${m.id})">Excluir</button>
+          </td>
+        </tr>
+      `).join("");
+    }
+
+    // --- Função para enviar mensagem ---
+    form.addEventListener("submit", e => {
+      e.preventDefault();
+      const paciente = selDest.value;
+      const assunto = document.getElementById("assunto").value.trim();
+      const texto = document.getElementById("mensagem").value.trim();
+      if (!paciente || !assunto || !texto) return alert("Preencha todos os campos.");
+
+      const data = new Date().toLocaleString("pt-BR");
+      const nova = { id: Date.now(), paciente, assunto, texto, data };
+
+      const msgs = JSON.parse(localStorage.getItem("mensagens") || "[]");
+      msgs.push(nova);
+      localStorage.setItem("mensagens", JSON.stringify(msgs));
+
+      form.reset();
+      renderMensagens();
+
+      alert(`Mensagem enviada para ${paciente}!`);
+    });
+
+    // --- Reenviar mensagem (simulação WhatsApp) ---
+    window.reenviarMensagem = function(id) {
+      const msgs = JSON.parse(localStorage.getItem("mensagens") || "[]");
+      const msg = msgs.find(x => x.id === id);
+      if (!msg) return alert("Mensagem não encontrada.");
+
+      const paciente = pacientes.find(p => p.nome === msg.paciente);
+      const telefone = paciente ? paciente.telefone.replace(/\D/g, "") : "";
+
+      if (telefone) {
+        const texto = encodeURIComponent(msg.texto);
+        const link = `https://wa.me/55${telefone}?text=${texto}`;
+        window.open(link, "_blank");
+      } else {
+        alert("Paciente sem número de telefone cadastrado.");
+      }
+    };
+
+    // --- Excluir mensagem ---
+    window.removerMensagem = function(id) {
+      if (!confirm("Excluir esta mensagem?")) return;
+      const msgs = JSON.parse(localStorage.getItem("mensagens") || "[]");
+      const nova = msgs.filter(x => x.id !== id);
+      localStorage.setItem("mensagens", JSON.stringify(nova));
+      renderMensagens();
+    };
+
+    carregarPacientes();
+    renderMensagens();
+  </script>
+</body>
+</html>

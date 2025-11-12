@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Lumière Dental — Login</title>
+  <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body class="login-page">
+  <div class="login-container">
+    <!-- LOGIN -->
+    <div class="login-card" id="loginCard">
+      <div class="logo">LD</div>
+      <h2>Lumière Dental</h2>
+      <p class="muted">Painel Administrativo</p>
+      <form id="loginForm">
+        <input type="text" id="user" placeholder="Usuário ou e-mail" required/>
+        <input type="password" id="pass" placeholder="Senha" required/>
+        <button type="submit" class="btn">Entrar</button>
+      </form>
+      <p class="muted small" style="margin-top:12px;">
+        Não tem conta? <a href="#" id="toRegister" style="color:var(--accent)">Criar conta</a>
+      </p>
+    </div>
+
+    <!-- REGISTRO EMBUTIDO -->
+    <div class="login-card" id="registerCard" style="display:none">
+      <div class="logo">LD</div>
+      <h2>Criar Conta</h2>
+      <p class="muted">Novo usuário para o painel</p>
+      <form id="registerForm">
+        <input type="text" id="nome" placeholder="Nome completo" required/>
+        <input type="email" id="email" placeholder="E-mail (será seu usuário)" required/>
+        <input type="password" id="senha" placeholder="Senha" required/>
+        <select id="cargo" required>
+          <option value="">Selecione o cargo</option>
+          <option value="recepcionista">Recepcionista</option>
+          <option value="dentista">Dentista</option>
+        </select>
+        <button type="submit" class="btn">Criar Conta</button>
+      </form>
+      <p class="muted small" style="margin-top:12px;">
+        Já tem conta? <a href="#" id="toLogin" style="color:var(--accent)">Voltar ao login</a>
+      </p>
+    </div>
+  </div>
+
+  <script src="js/login.js"></script>
+</body>
+</html>

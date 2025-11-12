@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pacientes - Lumière Dental</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <aside class="sidebar">
+    <h2>Lumière Dental</h2>
+    <nav>
+      <a href="dashboard.html">🏠 Dashboard</a>
+      <a href="pacientes.html" class="active">🧑‍⚕️ Pacientes</a>
+      <a href="equipe.html">👩‍🔬 Equipe</a>
+      <a href="financeiro.html">💰 Financeiro</a>
+      <a href="agendamentos.html">📅 Agendamentos</a>
+      <a href="mensagens.html">💬 Mensagens</a>
+    </nav>
+    <button class="btn logout" onclick="window.location.href='index.html'">Sair</button>
+  </aside>
+
+  <main class="main-content">
+    <header>
+      <h1>🧍 Cadastro de Pacientes</h1>
+    </header>
+
+    <section class="card">
+      <form id="formPaciente">
+        <div class="form-row">
+          <input id="nome" placeholder="Nome completo" required>
+          <input id="cpf" placeholder="CPF" required>
+        </div>
+        <div class="form-row">
+          <input id="telefone" placeholder="Telefone">
+          <input id="email" placeholder="E-mail">
+        </div>
+        <div class="form-row">
+          <input id="procedimento" placeholder="Procedimento (ex: Limpeza, Canal, Clareamento)">
+        </div>
+        <button class="btn" type="submit">Cadastrar Paciente</button>
+      </form>
+    </section>
+
+    <section class="card" style="margin-top:20px;">
+      <h2>📋 Lista de Pacientes</h2>
+      <table id="listaPacientes">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>CPF</th>
+            <th>Telefone</th>
+            <th>Email</th>
+            <th>Procedimento</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+  </main>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

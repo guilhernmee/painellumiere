@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agendamentos - Lumière Dental</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <aside class="sidebar">
+    <h2>Lumière Dental</h2>
+    <nav>
+      <a href="dashboard.html">🏠 Dashboard</a>
+      <a href="pacientes.html">🧑‍⚕️ Pacientes</a>
+      <a href="equipe.html">👩‍🔬 Equipe</a>
+      <a href="financeiro.html">💰 Financeiro</a>
+      <a href="agendamentos.html" class="active">📅 Agendamentos</a>
+      <a href="mensagens.html">💬 Mensagens</a>
+    </nav>
+    <button class="btn logout" onclick="window.location.href='index.html'">Sair</button>
+  </aside>
+
+  <main class="main-content">
+    <header>
+      <h1>📅 Agendamentos de Consultas</h1>
+    </header>
+
+    <section class="card">
+      <form id="formAgendamento">
+        <div class="form-row">
+          <select id="paciente" required>
+            <option value="">Selecione o paciente</option>
+          </select>
+          <select id="dentista" required>
+            <option value="">Selecione o dentista</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <input id="procedimento" placeholder="Procedimento (ex: Limpeza, Canal, Clareamento)" required>
+          <input id="data" type="date" required>
+          <input id="hora" type="time" required>
+        </div>
+        <button class="btn" type="submit">Agendar Consulta</button>
+      </form>
+    </section>
+
+    <section class="card" style="margin-top:20px;">
+      <h2>📋 Consultas Agendadas</h2>
+      <table id="listaAgendamentos">
+        <thead>
+          <tr>
+            <th>Paciente</th>
+            <th>Dentista</th>
+            <th>Procedimento</th>
+            <th>Data</th>
+            <th>Hora</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+  </main>
+
+  <script>
+    // --- carrega listas ---
+    const pacientes = JSON.parse(localStorage.getItem("pacientes") || "[]");
+    const dentistas = JSON.parse(localStorage.getItem("dentistas") || "[]");
+    const agendamentos = JSON.parse(localStorage.getItem("agendamentos") || "[]");
+
+    const selPac = document.getElementById("paciente");
+    const selDent = document.getElementById("dentista");
+    const form = document.getElementById("formAgendamento");
+    const tbody = document.querySelector("#listaAgendamentos tbody");
+
+    function carregarSelects() {
+      selPac.innerHTML = '<option value="">Selecione o paciente</option>' +
+        pacientes.map(p => `<option value="${p.nome}">${p.nome}</option>`).join("");
+
+      selDent.innerHTML = '<option value="">Selecione o dentista</option>' +
+        dentistas.map(d => `<option value="${d.nome}">${d.nome}</option>`).join("");
+    }
+
+    function renderAgendamentos() {
+      const lista = JSON.parse(localStorage.getItem("agendamentos") || "[]");
+      tbody.innerHTML = lista.map(a => `
+        <tr>
+          <td>${a.paciente}</td>
+          <td>${a.dentista}</td>
+          <td>${a.procedimento}</td>
+          <td>${a.data}</td>
+          <td>${a.hora}</td>
+          <td class="table-actions">
+            <button class="btn small ghost" onclick="removerAgendamento(${a.id})">Cancelar</button>
+          </td>
+        </tr>
+      `).join("");
+    }
+
+    window.removerAgendamento = function(id) {
+      if (!confirm("Cancelar esta consulta?")) return;
+      const lista = JSON.parse(localStorage.getItem("agendamentos") || "[]");
+      const nova = lista.filter(a => a.id !== id);
+      localStorage.setItem("agendamentos", JSON.stringify(nova));
+      renderAgendamentos();
+    };
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const paciente = selPac.value;
+      const dentista = selDent.value;
+      const procedimento = document.getElementById("procedimento").value.trim();
+      const data = document.getElementById("data").value;
+      const hora = document.getElementById("hora").value;
+      if (!paciente || !dentista || !data || !hora) return alert("Preencha todos os campos.");
+
+      const novo = { id: Date.now(), paciente, dentista, procedimento, data, hora };
+      const lista = JSON.parse(localStorage.getItem("agendamentos") || "[]");
+      lista.push(novo);
+      localStorage.setItem("agendamentos", JSON.stringify(lista));
+      form.reset();
+      renderAgendamentos();
+    });
+
+    carregarSelects();
+    renderAgendamentos();
+  </script>
+</body>
+</html>

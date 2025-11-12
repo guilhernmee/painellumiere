@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel Administrativo - Lumière Dental</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <aside class="sidebar">
+    <h2>Lumière Dental</h2>
+    <nav>
+      <a href="dashboard.html" class="active">🏠 Dashboard</a>
+      <a href="pacientes.html">🧑‍⚕️ Pacientes</a>
+      <a href="equipe.html">👩‍🔬 Equipe</a>
+      <a href="financeiro.html">💰 Financeiro</a>
+      <a href="agendamentos.html">📅 Agendamentos</a>
+      <a href="mensagens.html">💬 Mensagens</a>
+    </nav>
+    <button class="btn logout" onclick="window.location.href='index.html'">Sair</button>
+  </aside>
+
+  <main class="main-content">
+    <header>
+      <h1>📊 Painel Administrativo</h1>
+    </header>
+
+    <section class="dashboard-cards">
+      <div class="card">
+        <h3>Total de Pacientes</h3>
+        <p id="totalPacientes">0</p>
+      </div>
+      <div class="card">
+        <h3>Total Financeiro (Entradas)</h3>
+        <p id="totalFinanceiro">R$ 0,00</p>
+      </div>
+    </section>
+
+    <section class="dashboard-table">
+      <h2>🧾 Últimos Pacientes</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Procedimento</th>
+            <th>Telefone</th>
+          </tr>
+        </thead>
+        <tbody id="ultimosPacientes">
+          <tr><td colspan="3" style="text-align:center;">Nenhum paciente ainda.</td></tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
