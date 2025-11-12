@@ -221,4 +221,77 @@
 
   window.updateDashboard = updateDashboard;
   updateDashboard();
+    // --- ESTOQUE ---
+  if (document.getElementById("formEstoque") || document.getElementById("listaEstoque")) {
+    if (!localStorage.getItem("estoque")) localStorage.setItem("estoque", JSON.stringify([]));
+
+    const form = document.getElementById("formEstoque");
+    const tabela = document.getElementById("listaEstoque");
+
+    const getEstoque = () => JSON.parse(localStorage.getItem("estoque") || "[]");
+    const setEstoque = (v) => localStorage.setItem("estoque", JSON.stringify(v));
+
+    function renderEstoque() {
+      const estoque = getEstoque();
+      if (!tabela) return;
+      const tbody = tabela.querySelector("tbody");
+      if (estoque.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Nenhum item cadastrado.</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = estoque.map(i => `
+        <tr ${i.alerta && i.quantidade <= i.alerta ? 'style="background:rgba(255,0,0,0.08);"' : ''}>
+          <td>${i.nome}</td>
+          <td>${i.categoria || '-'}</td>
+          <td>${i.quantidade}</td>
+          <td>${i.validade || '-'}</td>
+          <td class="table-actions">
+            <button class="btn small ghost" onclick="editarItem(${i.id})">Editar</button>
+            <button class="btn small" onclick="removerItem(${i.id})">Excluir</button>
+          </td>
+        </tr>
+      `).join("");
+    }
+
+    window.removerItem = function (id) {
+      if (!confirm("Deseja remover este item do estoque?")) return;
+      let estoque = getEstoque().filter(x => x.id !== id);
+      setEstoque(estoque);
+      renderEstoque();
+    };
+
+    window.editarItem = function (id) {
+      const itens = getEstoque();
+      const item = itens.find(x => x.id === id);
+      if (!item) return alert("Item não encontrado");
+      document.getElementById("nomeItem").value = item.nome;
+      document.getElementById("quantidade").value = item.quantidade;
+      document.getElementById("categoria").value = item.categoria || "";
+      document.getElementById("validade").value = item.validade || "";
+      document.getElementById("alerta").value = item.alerta || "";
+      removerItem(id);
+    };
+
+    if (form) {
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        const nome = document.getElementById("nomeItem").value.trim();
+        const qtd = Number(document.getElementById("quantidade").value);
+        const categoria = document.getElementById("categoria").value.trim();
+        const validade = document.getElementById("validade").value;
+        const alerta = Number(document.getElementById("alerta").value) || 0;
+
+        if (!nome || qtd <= 0) return alert("Preencha o nome e a quantidade.");
+
+        const estoque = getEstoque();
+        estoque.push({ id: Date.now(), nome, quantidade: qtd, categoria, validade, alerta });
+        setEstoque(estoque);
+        form.reset();
+        renderEstoque();
+      });
+    }
+
+    renderEstoque();
+  }
+
 })();
